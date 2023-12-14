@@ -9,6 +9,7 @@ import Favorites from './pages/Favorites';
 import { Text } from 'react-native-paper';
 import { Icon, MD3Colors } from 'react-native-paper'
 import { List } from 'react-native-paper';
+import Search from './pages/Search';
 const Tab = createBottomTabNavigator();
 
 
@@ -40,6 +41,14 @@ function MyTabs() {
           ),
         }}
      />
+
+<Tab.Screen name="Search" component={Search}  options={{
+          headerShown:false,
+          tabBarLabel: 'Search',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="magnify" color={color} size={size} />
+          ),
+        }}  />
     </Tab.Navigator>
    
   );
@@ -101,6 +110,7 @@ export default function App() {
                   />
               </Pressable>
             </View>
+            
       </View>
 
       <View style={styles.appSubHeader}>

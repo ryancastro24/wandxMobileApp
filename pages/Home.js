@@ -23,7 +23,7 @@ function Home() {
       </View>
 
       <Text variant='headlineSmall'> Siargao</Text>
-      <Divider style={styles.divider} />
+      <Divider style={styles.divider} bold={true}/>
       <Text style={styles.text}>
             Siargao Island is a popular destination in the Philippines known for
             its pristine beaches, surfing spots, and natural beauty. It is
@@ -38,23 +38,20 @@ function Home() {
             island in the Philippines and part of the province of Surigao del
             Norte.{'\n'}
       </Text>
+      <Divider style={styles.divider} bold={true}/>
 
-      <List.Section title="Accordions">
+      <List.Section title="Frequently Asked Questions">
       <List.Accordion
-        title="Uncontrolled Accordion"
-        left={props => <List.Icon {...props} icon="folder" />}>
-        <List.Item title="First item" />
-        <List.Item title="Second item" />
+        title="Q1: How to get to Siargao?"
+        left={props => <List.Icon {...props} icon="chat-question" />}>
+        <List.Item title="A: To reach Siargao, book a domestic flight to Sayak Airport
+                from Cebu. If you prefer a scenic route, you can optionally take
+                a ferry from Surigao City. Once you arrive, make arrangements
+                for local transportation to your accommodation." />
       </List.Accordion>
+     
 
-      <List.Accordion
-        title="Controlled Accordion"
-        left={props => <List.Icon {...props} icon="folder" />}
-        expanded={expanded}
-        onPress={handlePress}>
-        <List.Item title="First item" />
-        <List.Item title="Second item" />
-      </List.Accordion>
+      
     </List.Section>
 
      
@@ -83,6 +80,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black', // Set the color of the divider
   },
   text: {
+    marginTop: 8,
     textAlign: 'justify'
 
   }
