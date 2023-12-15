@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View,SafeAreaView ,StatusBar,Platform,Pressable,DrawerLayoutAndroid,StyleSheet, Button} from 'react-native';
+import { View,SafeAreaView ,StatusBar,Platform,Pressable,DrawerLayoutAndroid,StyleSheet, Button, ScrollView} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,12 +13,13 @@ import Search from './pages/Search';
 const Tab = createBottomTabNavigator();
 
 
-function MyTabs() {
+function MyTabs({language}) {
+
   return (
-      
-  
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={Home}  options={{
+      <Tab.Screen name="Home" 
+          children={props => <Home language={language} {...props} />}
+           initialParams={{ language }} options={{
           headerShown:false,
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
@@ -44,19 +45,19 @@ function MyTabs() {
 
 <Tab.Screen name="Search" component={Search}  options={{
           headerShown:false,
-          tabBarLabel: 'Search',
+          tabBarLabel: 'Ask Question',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="magnify" color={color} size={size} />
+            <MaterialCommunityIcons name="chat-question" color={color} size={size} />
           ),
         }}  />
     </Tab.Navigator>
-   
   );
 }
 
 export default function App() {
   const drawer = React.useRef(null);
   const [expanded, setExpanded] = React.useState(true);
+  const [language, setlanguage] = React.useState('English');
 
   const handlePress = () => setExpanded(!expanded);
 
@@ -79,11 +80,21 @@ export default function App() {
         left={props => <List.Icon {...props} icon="translate" />}
         rippleColor={"#2C4043"}
         >
-        <List.Item title="English" />
-        <List.Item title="Dutch" />
-        <List.Item title="French" />
-        <List.Item title="Japanese" />
-        <List.Item title="Chinese" />
+      <ScrollView >
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('English')}} title="English" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Dutch')}} title="Dutch" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('French')}} title="French" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Danish')}} title="Danish" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('German')}} title="German" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Cebuano')}} title="Cebuano" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Filipino')}} title="Filipino" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Spanish')}} title="Spanish" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Arabic')}} title="Arabic" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Mandarin')}} title="Mandarin" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Swedish')}} title="Swedish" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Russian')}} title="Russian" />
+        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Italian')}} title="Italian" />
+        </ScrollView>
       </List.Accordion>
     </List.Section>
     </View>
@@ -119,7 +130,7 @@ export default function App() {
 
    
         <NavigationContainer>
-          <MyTabs />
+          <MyTabs language={language} />
         </NavigationContainer>
 
         </View>

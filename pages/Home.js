@@ -1,12 +1,53 @@
 import * as React from 'react';
-import { View, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Image, StyleSheet, ScrollView, FlatList } from 'react-native';
 import { Text, Divider } from 'react-native-paper';
 import { List } from 'react-native-paper';
 
-function Home() {
+function Home({language}) {
   const [expanded, setExpanded] = React.useState(true);
+  const [questionData,setQuestionData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+  
+ 
+
+  const finalQuestionData = questionData.filter(val => val.language === language );
 
   const handlePress = () => setExpanded(!expanded);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const apiUrl = 'http://192.168.254.116:8000/api/questions'; // Replace with your machine's IP address
+
+          const response = await fetch(apiUrl); // Replace with your API endpoint
+          const result = await response.json();
+          setQuestionData(result);
+        } catch (error) {
+          setError(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  fetchData();
+},[]);
+
+if (loading) {
+  return (
+    <View>
+      <Text>Loading...</Text>
+    </View>
+  );
+}
+
+if (error) {
+  return (
+    <View>
+      <Text>Error: {error.message}</Text>
+    </View>
+  );
+}
+
   return (
     <ScrollView>
     <View style={styles.container}>
@@ -41,15 +82,14 @@ function Home() {
       <Divider style={styles.divider} bold={true}/>
 
       <List.Section title="Frequently Asked Questions">
-      <List.Accordion
-        title="Q1: How to get to Siargao?"
+
+      {finalQuestionData.map(val =>  <List.Accordion titleNumberOfLines={50}  key={val.id}
+        title={`Q${val.question_number} ${val.text}`}
         left={props => <List.Icon {...props} icon="chat-question" />}>
-        <List.Item title="A: To reach Siargao, book a domestic flight to Sayak Airport
-                from Cebu. If you prefer a scenic route, you can optionally take
-                a ferry from Surigao City. Once you arrive, make arrangements
-                for local transportation to your accommodation." />
+        <List.Item titleNumberOfLines={100}  title={val.answer} />
       </List.Accordion>
-     
+     ) }
+    
 
       
     </List.Section>
