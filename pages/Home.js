@@ -1,11 +1,15 @@
 import * as React from 'react';
 import { View, Image, StyleSheet, ScrollView, FlatList } from 'react-native';
 import { Text, Divider } from 'react-native-paper';
-import { List } from 'react-native-paper';
+import { List, ActivityIndicator } from 'react-native-paper';
+import { ngrok_api } from '../libs/ngrok_api';
+
+
 
 function Home({language}) {
   const [expanded, setExpanded] = React.useState(true);
   const [questionData,setQuestionData] = React.useState([]);
+  const [descriptions,setDescriptions] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
   
@@ -13,17 +17,47 @@ function Home({language}) {
 
   const finalQuestionData = questionData.filter(val => val.language === language );
 
+  const finalDescriptionData = descriptions.filter(val => val.language === language );
+
   const handlePress = () => setExpanded(!expanded);
 
   React.useEffect(() => {
     const fetchData = async () => {
         try {
-            const apiUrl = 'http://192.168.254.116:8000/api/questions'; // Replace with your machine's IP address
+            const apiUrl = `${ngrok_api}/api/descriptions`; // Replace with your machine's IP address
 
-          const response = await fetch(apiUrl); // Replace with your API endpoint
+          const response = await fetch(apiUrl,{
+            headers: new Headers({
+              "ngrok-skip-browser-warning": "69420",
+            }),
+      
+          }); // Replace with your API endpoint
+          const result = await response.json();
+          setDescriptions(result);
+        } catch (error) { 
+          setError(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  fetchData();
+},[]);
+
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const apiUrl = `${ngrok_api}/api/questions`; // Replace with your machine's IP address
+
+          const response = await fetch(apiUrl,{
+            headers: new Headers({
+              "ngrok-skip-browser-warning": "69420",
+            }),
+      
+          }); // Replace with your API endpoint
           const result = await response.json();
           setQuestionData(result);
-        } catch (error) {
+        } catch (error) { 
           setError(error);
         } finally {
           setLoading(false);
@@ -34,8 +68,8 @@ function Home({language}) {
 
 if (loading) {
   return (
-    <View>
-      <Text>Loading...</Text>
+    <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+    <ActivityIndicator size="large" animating={true} color="#2C4043" />
     </View>
   );
 }
@@ -63,22 +97,20 @@ if (error) {
         />
       </View>
 
-      <Text variant='headlineSmall'> Siargao</Text>
+      <Text variant='titleLarge'>Why Siargao?</Text>
       <Divider style={styles.divider} bold={true}/>
-      <Text style={styles.text}>
-            Siargao Island is a popular destination in the Philippines known for
-            its pristine beaches, surfing spots, and natural beauty. It is
-            located in the northeastern part of Mindanao, the second-largest
-            island in the Philippines and part of the province of Surigao del
-            Norte.
-      </Text>
-      <Text style={{textAlign:'justify',marginTop:15}}>
-            Siargao Island is a popular destination in the Philippines known for
-            its pristine beaches, surfing spots, and natural beauty. It is
-            located in the northeastern part of Mindanao, the second-largest
-            island in the Philippines and part of the province of Surigao del
-            Norte.{'\n'}
-      </Text>
+
+      {finalDescriptionData.map(val => <View key={val.id}>
+
+        <Text style={styles.text}>
+            {val.description_one}
+        </Text>
+
+        <Text style={{textAlign:'justify',marginTop:15}}>
+            {val.description_two}
+        </Text>
+      </View>)}
+      
       <Divider style={styles.divider} bold={true}/>
 
       <List.Section title="Frequently Asked Questions">
@@ -90,8 +122,6 @@ if (error) {
       </List.Accordion>
      ) }
     
-
-      
     </List.Section>
 
      

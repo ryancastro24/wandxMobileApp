@@ -1,16 +1,31 @@
 import * as React from 'react';
-import { View,SafeAreaView ,StatusBar,Platform,Pressable,DrawerLayoutAndroid,StyleSheet, Button, ScrollView} from 'react-native';
+import { View,SafeAreaView ,StatusBar,Platform,Pressable,DrawerLayoutAndroid,StyleSheet, FlatList, ScrollView} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Home from './pages/Home';
 import ListScreen from './pages/ListScreen';
 import Favorites from './pages/Favorites';
 import { Text } from 'react-native-paper';
-import { Icon, MD3Colors } from 'react-native-paper'
+import { Icon } from 'react-native-paper'
 import { List } from 'react-native-paper';
 import Search from './pages/Search';
+import { languages } from './libs/sampleData';
+import ListOfLanguages from './components/ListOfLanguages';
+import TouristSpot from './components/TouristSpot';
+
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+
+const ListStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="ListScreen" options={{headerShown:false}} component={ListScreen} />
+    <Stack.Screen name="TouristSpot" component={TouristSpot} />
+    {/* Add more screens for the ListStack if needed */}
+  </Stack.Navigator>
+);
 
 
 function MyTabs({language}) {
@@ -26,8 +41,8 @@ function MyTabs({language}) {
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}  />
-      <Tab.Screen name="List" component={ListScreen} options={{
-          headerTitle: 'Tourist Spots',
+      <Tab.Screen name="List" component={ListStack} options={{
+          headerShown:false,
           tabBarLabel: 'List',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="clipboard-text" color={color} size={size} />
@@ -54,10 +69,12 @@ function MyTabs({language}) {
   );
 }
 
+
+
 export default function App() {
   const drawer = React.useRef(null);
   const [expanded, setExpanded] = React.useState(true);
-  const [language, setlanguage] = React.useState('English');
+  const [language, setLanguage] = React.useState('English');
 
   const handlePress = () => setExpanded(!expanded);
 
@@ -74,29 +91,8 @@ export default function App() {
       </Pressable>
     </View>
 
-      <List.Section title="Settings">
-      <List.Accordion
-        title="Available Languages"
-        left={props => <List.Icon {...props} icon="translate" />}
-        rippleColor={"#2C4043"}
-        >
-      <ScrollView >
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('English')}} title="English" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Dutch')}} title="Dutch" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('French')}} title="French" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Danish')}} title="Danish" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('German')}} title="German" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Cebuano')}} title="Cebuano" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Filipino')}} title="Filipino" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Spanish')}} title="Spanish" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Arabic')}} title="Arabic" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Mandarin')}} title="Mandarin" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Swedish')}} title="Swedish" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Russian')}} title="Russian" />
-        <List.Item onPress={() =>{ drawer.current.closeDrawer(); setlanguage('Italian')}} title="Italian" />
-        </ScrollView>
-      </List.Accordion>
-    </List.Section>
+    <ListOfLanguages languages={languages} drawer={drawer} setLanguage={setLanguage}/>
+      
     </View>
   );
 
@@ -130,6 +126,7 @@ export default function App() {
 
    
         <NavigationContainer>
+          
           <MyTabs language={language} />
         </NavigationContainer>
 
